@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FlickrRestore": {
+      "commandName": "Project",
+      "commandLineArgs": "source target"
+    }
+  }
+}
