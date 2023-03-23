@@ -34,6 +34,19 @@ if (Directory.GetFiles(targetFolder).Length > 0)
     return;
 }
 
+string subfolderCopied = "copied";
+string subfolderRestored = "restored";
+
+// create target sub folders
+if (!Directory.Exists(targetFolder + Path.DirectorySeparatorChar + subfolderCopied))
+{
+    Directory.CreateDirectory(targetFolder + Path.DirectorySeparatorChar + subfolderCopied);
+}
+if (!Directory.Exists(targetFolder + Path.DirectorySeparatorChar + subfolderRestored))
+{
+    Directory.CreateDirectory(targetFolder + Path.DirectorySeparatorChar + subfolderRestored);
+}
+
 // folders exist
 var sourceImages = Directory.GetFiles(sourceFolder, "*.jpg");
 var sourceMetadata = Directory.GetFiles(sourceFolder, "*.json");
@@ -43,13 +56,13 @@ Console.WriteLine($"Found {sourceMetadata.Length} metadata files.");
 Console.WriteLine("Restoring files, please wait...");
 
 int restoredCounter = 0;
+int copiedCounter = 0;
 
 // for each found image
 foreach (var image in sourceImages)
 {
-    var imageNumber = Path.GetFileNameWithoutExtension(image);
-    imageNumber = imageNumber.Substring(imageNumber.IndexOf("_") + 1);
-    imageNumber = imageNumber.Substring(0, imageNumber.IndexOf("_"));
+    var imageName = Path.GetFileNameWithoutExtension(image);
+    bool restored = false;
 
     // find metadata file
     foreach(var metadata in sourceMetadata)
@@ -57,16 +70,27 @@ foreach (var image in sourceImages)
         var metadataImageNumber = Path.GetFileNameWithoutExtension(metadata);
         metadataImageNumber = metadataImageNumber.Substring(6);
 
-        if (imageNumber == metadataImageNumber)
+        if (imageName.EndsWith(metadataImageNumber + "_o"))
         {
             RestoreImageWithMetadata(image, metadata);
             restoredCounter++;
+            restored = true;
             break;
         }
+    }
+
+    // if there are no meta informations, just copy
+    if(!restored)
+    {
+        Console.WriteLine($"No meta data found for {image}.");
+        string filename = targetFolder + Path.DirectorySeparatorChar + subfolderCopied + Path.DirectorySeparatorChar + Path.GetFileName(image);
+        File.Copy(image, filename, false);
+        copiedCounter++;
     }
 }
 
 Console.WriteLine($"Restored {restoredCounter} files.");
+Console.WriteLine($"Only copied {copiedCounter} files.");
 
 // copies an image to a new location with a filename based on its original file creation date and sets this datetime as file creation date
 void RestoreImageWithMetadata(string image, string metadata)
@@ -78,11 +102,11 @@ void RestoreImageWithMetadata(string image, string metadata)
     var originalFilename = ConvertDatetimeToFilename(dateTimeOfImage);
 
     int number = 1;
-    var filename = targetFolder + Path.DirectorySeparatorChar + originalFilename + "_" + number.ToString("000") + ".jpg";
+    var filename = targetFolder + Path.DirectorySeparatorChar + subfolderRestored + Path.DirectorySeparatorChar + originalFilename + "_" + number.ToString("000") + ".jpg";
     while (File.Exists(filename))
     {
         number++;
-        filename = targetFolder + Path.DirectorySeparatorChar + originalFilename + "_" + number.ToString("000") + ".jpg";
+        filename = targetFolder + Path.DirectorySeparatorChar + subfolderRestored + Path.DirectorySeparatorChar + originalFilename + "_" + number.ToString("000") + ".jpg";
     }
 
     File.Copy(image, filename, false);
