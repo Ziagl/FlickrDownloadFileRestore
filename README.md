@@ -20,4 +20,4 @@ images that are restored with metadata in "restored" subfolder, all other images
 
 ## Detailed description
 You can find a detailed description in German with screenshots on my blog:
-https://developer-blog.net/wp-admin/post.php?post=12282&action=edit
+https://developer-blog.net/flickr-photo-restore-script/
