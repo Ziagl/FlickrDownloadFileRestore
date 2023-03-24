@@ -4,7 +4,7 @@
 using FlickrRestore;
 using System.Text.Json;
 
-if (args.Length != 2)
+if (args.Length != 3)
 {
     Console.WriteLine("Number of arguments is wrong!");
     PrintHelp();
@@ -17,6 +17,7 @@ if (args.Length != 2)
 // actual script
 var sourceFolder = args[0];
 var targetFolder = args[1];
+var fileType = args[2];
 
 if (!Directory.Exists(sourceFolder))
 {
@@ -48,7 +49,7 @@ if (!Directory.Exists(targetFolder + Path.DirectorySeparatorChar + subfolderRest
 }
 
 // folders exist
-var sourceImages = Directory.GetFiles(sourceFolder, "*.jpg");
+var sourceImages = Directory.GetFiles(sourceFolder, "*." + fileType);
 var sourceMetadata = Directory.GetFiles(sourceFolder, "*.json");
 
 Console.WriteLine($"Found {sourceImages.Length} images.");
@@ -135,7 +136,7 @@ void PrintHelp()
     Console.WriteLine("Please separate your downloaded data in one source folder and create a new target folder.");
     Console.WriteLine("Example: put all your extracted images from downloaded *.zip into a folder called 'source' and add metadata in json file format.");
     Console.WriteLine("Create an empty folder called 'target'.");
-    Console.WriteLine("Start this script with the names of source and target folders like:");
-    Console.WriteLine("flickrrestore source target");
-    Console.WriteLine("This script now copies all images from source to target and restores them with filename and filedate from json metadata.");
+    Console.WriteLine("Start this script with the names of source and target folders and the filetype like:");
+    Console.WriteLine("flickrrestore source target jpg");
+    Console.WriteLine("This script now copies all jpg files from source to target and restores them with filename and filedate from json metadata.");
 }

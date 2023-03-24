@@ -17,3 +17,7 @@ images in the correct order.
 
 After the script is finished, you can delete source folder. Target folder contains all images. All
 images that are restored with metadata in "restored" subfolder, all other images in "copied" subfolder.
+
+## Detailed description
+You can find a detailed description in German with screenshots on my blog:
+https://developer-blog.net/wp-admin/post.php?post=12282&action=edit
